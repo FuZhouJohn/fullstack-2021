@@ -5,9 +5,10 @@ const Button = ({ handleClick, text }) => (
 );
 
 const StatisticLine = ({ text, value }) => (
-  <p>
-    {text} {value}
-  </p>
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
 );
 
 const Statistics = ({ good, neutral, bad }) => {
@@ -18,17 +19,19 @@ const Statistics = ({ good, neutral, bad }) => {
   const getAverage = () => (good - bad) / getAll();
   const getPositive = () => (good / getAll()) * 100;
   return (
-    <div>
-      <StatisticLine text="good" value={good}></StatisticLine>
-      <StatisticLine text="neutral" value={neutral}></StatisticLine>
-      <StatisticLine text="bad" value={bad}></StatisticLine>
-      <StatisticLine text="all" value={getAll()}></StatisticLine>
-      <StatisticLine text="average" value={getAverage()}></StatisticLine>
-      <StatisticLine
-        text="positive"
-        value={`${getPositive()} %`}
-      ></StatisticLine>
-    </div>
+    <table>
+      <tbody>
+        <StatisticLine text="good" value={good}></StatisticLine>
+        <StatisticLine text="neutral" value={neutral}></StatisticLine>
+        <StatisticLine text="bad" value={bad}></StatisticLine>
+        <StatisticLine text="all" value={getAll()}></StatisticLine>
+        <StatisticLine text="average" value={getAverage()}></StatisticLine>
+        <StatisticLine
+          text="positive"
+          value={`${getPositive()} %`}
+        ></StatisticLine>
+      </tbody>
+    </table>
   );
 };
 
