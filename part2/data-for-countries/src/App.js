@@ -2,6 +2,21 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const Country = ({ country }) => {
+  const [weather, setWeather] = useState(null);
+  useEffect(() => {
+    const api_key = process.env.REACT_APP_API_KEY;
+    axios
+      .get("http://api.weatherstack.com/current", {
+        params: {
+          access_key: api_key,
+          query: country.capital[0],
+        },
+      })
+      .then((response) => {
+        setWeather(response.data.current);
+      });
+  }, [country]);
+
   return (
     <div>
       <h1>{country.name.common}</h1>
@@ -14,6 +29,20 @@ const Country = ({ country }) => {
         ))}
       </ul>
       <img src={country.flags.png} alt="flag" />
+      {weather && (
+        <div>
+          <h2>Weather in Helsinki</h2>
+          <p>
+            <b>temperature: </b>
+            {weather.temperature} Celcius
+          </p>
+          <img src={weather.weather_icons[0]} alt="" />
+          <p>
+            <b>wind: </b>
+            {weather.wind_speed} mph direction {weather.wind_dir}{" "}
+          </p>
+        </div>
+      )}
     </div>
   );
 };
@@ -56,7 +85,7 @@ function App() {
       {filteredCountries.length < 10 &&
         filteredCountries.length > 1 &&
         filteredCountries.map((country) => (
-          <div>
+          <div key={country.name.common}>
             <p>
               {country.name.common}
               <button onClick={() => handleShowCountry(country)}>show</button>
