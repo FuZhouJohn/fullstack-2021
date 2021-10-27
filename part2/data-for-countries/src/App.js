@@ -40,6 +40,10 @@ function App() {
     });
   }, []);
 
+  const handleShowCountry = (country) => {
+    setFilteredCountries([country]);
+  };
+
   return (
     <div>
       <p>
@@ -53,7 +57,10 @@ function App() {
         filteredCountries.length > 1 &&
         filteredCountries.map((country) => (
           <div>
-            <p>{country.name.common}</p>
+            <p>
+              {country.name.common}
+              <button onClick={() => handleShowCountry(country)}>show</button>
+            </p>
           </div>
         ))}
       {filteredCountries.length === 1 && (
