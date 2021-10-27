@@ -1,11 +1,37 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
+const Country = ({ country }) => {
+  return (
+    <div>
+      <h1>{country.name.common}</h1>
+      <p>capital {country.capital[0]}</p>
+      <p>population {country.population}</p>
+      <h2>languages</h2>
+      <ul>
+        {Object.values(country.languages).map((l) => (
+          <li key={l}>{l}</li>
+        ))}
+      </ul>
+      <img src={country.flags.png} alt="flag" />
+    </div>
+  );
+};
+
 function App() {
   const [countries, setCountries] = useState([]);
+  const [filteredCountries, setFilteredCountries] = useState([]);
   const [filterText, setFilterText] = useState("");
   const handleFilterTextChange = (event) => {
     setFilterText(event.target.value);
+    setFilteredCountries(
+      countries.filter(
+        (country) =>
+          country.name.common
+            .toLowerCase()
+            .indexOf(event.target.value.toLowerCase()) >= 0
+      )
+    );
   };
 
   useEffect(() => {
@@ -13,11 +39,6 @@ function App() {
       setCountries(response.data);
     });
   }, []);
-
-  const filteredCountries = countries.filter(
-    (country) =>
-      country.name.common.toLowerCase().indexOf(filterText.toLowerCase()) >= 0
-  );
 
   return (
     <div>
@@ -30,20 +51,13 @@ function App() {
       )}
       {filteredCountries.length < 10 &&
         filteredCountries.length > 1 &&
-        filteredCountries.map((country) => <p>{country.name.common}</p>)}
+        filteredCountries.map((country) => (
+          <div>
+            <p>{country.name.common}</p>
+          </div>
+        ))}
       {filteredCountries.length === 1 && (
-        <div>
-          <h1>{filteredCountries[0].name.common}</h1>
-          <p>capital {filteredCountries[0].capital[0]}</p>
-          <p>population {filteredCountries[0].population}</p>
-          <h2>languages</h2>
-          <ul>
-            {Object.values(filteredCountries[0].languages).map((l) => (
-              <li key={l}>{l}</li>
-            ))}
-          </ul>
-          <img src={filteredCountries[0].flags.png} alt="flag" />
-        </div>
+        <Country country={filteredCountries[0]}></Country>
       )}
     </div>
   );
