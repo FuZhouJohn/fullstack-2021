@@ -52,15 +52,17 @@ const PersonForm = ({ persons, setPersons }) => {
   );
 };
 
-const Persons = ({ persons, filterText }) => {
+const Persons = ({ persons, filterText, onDelete }) => {
   const filteredPersons = persons.filter(
     (person) => person.name.toLowerCase().indexOf(filterText.toLowerCase()) >= 0
   );
+
   return (
     <div>
       {filteredPersons.map((person) => (
         <p key={person.name}>
-          {person.name} {person.number}
+          {person.name} {person.number}{" "}
+          <button onClick={() => onDelete(person)}>delete</button>
         </p>
       ))}
     </div>
@@ -77,6 +79,13 @@ const App = () => {
   }, []);
 
   const [filterText, setFilterText] = useState("");
+  const handleDelete = (person) => {
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      personService.deleteById(person.id).then(() => {
+        setPersons(persons.filter((p) => p.id !== person.id));
+      });
+    }
+  };
 
   return (
     <div>
@@ -85,7 +94,11 @@ const App = () => {
       <h3>add a new</h3>
       <PersonForm persons={persons} setPersons={setPersons}></PersonForm>
       <h3>Numbers</h3>
-      <Persons filterText={filterText} persons={persons}></Persons>
+      <Persons
+        filterText={filterText}
+        persons={persons}
+        onDelete={handleDelete}
+      ></Persons>
     </div>
   );
 };
