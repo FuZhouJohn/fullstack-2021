@@ -1,4 +1,4 @@
-import axios from "axios";
+import personService from "./server/persons";
 import { useEffect, useState } from "react";
 
 const Filter = ({ text, setText }) => {
@@ -30,13 +30,11 @@ const PersonForm = ({ persons, setPersons }) => {
       return;
     }
     const personObject = { name: newName, number: newNumber };
-    axios
-      .post("http://localhost:3001/persons", personObject)
-      .then((response) => {
-        setPersons(persons.concat(response.data));
-        setNewName("");
-        setNewNumber("");
-      });
+    personService.create(personObject).then((returnedPerson) => {
+      setPersons(persons.concat(returnedPerson));
+      setNewName("");
+      setNewNumber("");
+    });
   };
 
   return (
@@ -73,8 +71,8 @@ const App = () => {
   const [persons, setPersons] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
+    personService.getAll().then((initialPersons) => {
+      setPersons(initialPersons);
     });
   }, []);
 
