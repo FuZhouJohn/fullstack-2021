@@ -1,7 +1,7 @@
 import { useState } from "react";
 import personService from "../server/persons";
 
-const PersonForm = ({ persons, setPersons }) => {
+const PersonForm = ({ persons, setPersons, setNotice, setNoticeType }) => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
 
@@ -10,6 +10,16 @@ const PersonForm = ({ persons, setPersons }) => {
   };
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value);
+  };
+
+  let timeOut = null;
+  const showNotification = (type, message) => {
+    if (timeOut) clearTimeout(timeOut);
+    setNotice(message);
+    setNoticeType(type);
+    timeOut = setTimeout(() => {
+      setNotice(null);
+    }, 5000);
   };
 
   const addPerson = (event) => {
@@ -27,10 +37,11 @@ const PersonForm = ({ persons, setPersons }) => {
           ...existedPerson,
           number: newNumber,
         })
-        .then((returnPerson) => {
+        .then((returnedPerson) => {
+          showNotification("success", `Updated ${returnedPerson.name}`);
           setPersons(
             persons.map((person) =>
-              person.id !== returnPerson.id ? person : returnPerson
+              person.id !== returnedPerson.id ? person : returnedPerson
             )
           );
           setNewName("");
@@ -41,6 +52,7 @@ const PersonForm = ({ persons, setPersons }) => {
 
     const personObject = { name: newName, number: newNumber };
     personService.create(personObject).then((returnedPerson) => {
+      showNotification("success", `Added ${returnedPerson.name}`);
       setPersons(persons.concat(returnedPerson));
       setNewName("");
       setNewNumber("");
