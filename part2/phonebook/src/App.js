@@ -24,6 +24,15 @@ const App = () => {
       });
     }
   };
+  let timeOut = null;
+  const showNotification = (type, message) => {
+    if (timeOut) clearTimeout(timeOut);
+    setNotice(message);
+    setNoticeType(type);
+    timeOut = setTimeout(() => {
+      setNotice(null);
+    }, 5000);
+  };
 
   return (
     <div>
@@ -34,8 +43,7 @@ const App = () => {
       <PersonForm
         persons={persons}
         setPersons={setPersons}
-        setNotice={setNotice}
-        setNoticeType={setNoticeType}
+        showNotification={showNotification}
       ></PersonForm>
       <h3>Numbers</h3>
       <Persons

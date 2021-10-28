@@ -1,7 +1,7 @@
 import { useState } from "react";
 import personService from "../server/persons";
 
-const PersonForm = ({ persons, setPersons, setNotice, setNoticeType }) => {
+const PersonForm = ({ persons, setPersons, showNotification }) => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
 
@@ -10,16 +10,6 @@ const PersonForm = ({ persons, setPersons, setNotice, setNoticeType }) => {
   };
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value);
-  };
-
-  let timeOut = null;
-  const showNotification = (type, message) => {
-    if (timeOut) clearTimeout(timeOut);
-    setNotice(message);
-    setNoticeType(type);
-    timeOut = setTimeout(() => {
-      setNotice(null);
-    }, 5000);
   };
 
   const addPerson = (event) => {
@@ -46,6 +36,15 @@ const PersonForm = ({ persons, setPersons, setNotice, setNoticeType }) => {
           );
           setNewName("");
           setNewNumber("");
+        })
+        .catch(() => {
+          showNotification(
+            "error",
+            `Information of ${existedPerson.name} has already been removed from server`
+          );
+          setPersons(
+            persons.filter((person) => person.id !== existedPerson.id)
+          );
         });
       return;
     }
