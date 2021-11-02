@@ -37,25 +37,24 @@ const PersonForm = ({ persons, setPersons, showNotification }) => {
           setNewName("");
           setNewNumber("");
         })
-        .catch(() => {
-          showNotification(
-            "error",
-            `Information of ${existedPerson.name} has already been removed from server`
-          );
-          setPersons(
-            persons.filter((person) => person.id !== existedPerson.id)
-          );
+        .catch((errorMessage) => {
+          showNotification("error", errorMessage);
         });
       return;
     }
 
     const personObject = { name: newName, number: newNumber };
-    personService.create(personObject).then((returnedPerson) => {
-      showNotification("success", `Added ${returnedPerson.name}`);
-      setPersons(persons.concat(returnedPerson));
-      setNewName("");
-      setNewNumber("");
-    });
+    personService
+      .create(personObject)
+      .then((returnedPerson) => {
+        showNotification("success", `Added ${returnedPerson.name}`);
+        setPersons(persons.concat(returnedPerson));
+        setNewName("");
+        setNewNumber("");
+      })
+      .catch((errorMessage) => {
+        showNotification("error", errorMessage);
+      });
   };
 
   return (

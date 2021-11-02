@@ -7,7 +7,12 @@ const getAll = () => {
 };
 
 const create = (personObject) => {
-  return axios.post(baseUrl, personObject).then((response) => response.data);
+  return axios
+    .post(baseUrl, personObject)
+    .then((response) => response.data)
+    .catch((error) => {
+      return Promise.reject(error.response.data.error);
+    });
 };
 
 const deleteById = (id) => {
@@ -17,7 +22,10 @@ const deleteById = (id) => {
 const update = (id, personObject) => {
   return axios
     .put(`${baseUrl}/${id}`, personObject)
-    .then((response) => response.data);
+    .then((response) => response.data)
+    .catch((error) => {
+      return Promise.reject(error.response.data.error);
+    });
 };
 
 const personService = {
